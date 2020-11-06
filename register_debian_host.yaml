@@ -5,9 +5,9 @@
     - name: Register Host To Zabbix Server
       delegate_to: 127.0.0.1
       community.zabbix.zabbix_host:
-       server_url: http://baykus.udhb.gov.tr/zabbix/
-       login_user: ksaruhan
-       login_password: Ahmed43!
+       server_url: http://zabbixserver.ip
+       login_user: user
+       login_password: xxxxx
        host_name: "{{ ansible_hostname }}"
        host_groups:
         - "Linux servers"
