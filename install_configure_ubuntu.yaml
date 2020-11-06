@@ -1,0 +1,87 @@
+---
+-
+  hosts: ubuntu
+  name: Debian Zabbiz Agent İnstalling
+  tasks:
+      - name: "Debian | Install gpg key"
+        apt_key:
+            state: present
+            url: http://repo.zabbix.com/zabbix-official-repo.key
+        become: yes
+
+########################################
+
+      - name: "Ubuntu 16.04 | Installing deb-src repository Debian"
+        become: yes
+        apt_repository:
+          repo: "deb https://repo.zabbix.com/zabbix/4.4/ubuntu/ xenial main"
+          state: present
+          update_cache: yes
+          filename: zabbix-agent_added_by_aks
+        when:
+           - ansible_os_family == 'Debian'
+           - ansible_distribution_major_version == '16'
+        
+########################################
+
+      - name: "Ubuntu 18.04 | Installing deb-src repository Debian"
+        become: yes
+        apt_repository:
+          repo: "deb https://repo.zabbix.com/zabbix/4.4/ubuntu/ bionic main"
+          state: present
+          update_cache: yes
+          filename: zabbix-agent_added_by_aks
+        when:
+           - ansible_os_family == 'Debian'
+           - ansible_distribution_major_version == '18'
+        
+########################################
+
+      - name: "Ubuntu 20.04 | Installing deb-src repository Debian"
+        become: yes
+        apt_repository:
+          repo: "deb https://repo.zabbix.com/zabbix/4.4/ubuntu/ focal main"
+          state: present
+          update_cache: yes
+          filename: zabbix-agent_added_by_aks
+        when:
+           - ansible_os_family == 'Debian'
+           - ansible_distribution_major_version == '20'
+        
+########################################
+########################################
+
+      - name: "Ubuntu  | Installing Zabbix-agent"
+        become: yes
+        apt:
+            name: zabbix-agent
+            state: present
+            update_cache: yes
+        notify: zabbix_agent_restart    
+
+
+########################################
+########################################
+
+
+      - become: true
+        name: CONFIGURE zabbix-agent
+        copy:
+          src: /var/lib/awx/projects/zabbix/zabbix_agentd.conf
+          dest: /etc/zabbix/zabbix_agentd.conf
+          owner: root
+          group: root
+          mode: '0644'
+        notify: zabbix_agent_restart 
+
+########################################
+########################################
+
+  handlers:
+
+    - become: true
+      name: 'zabbix_agent_restart'
+      systemd:
+          name: zabbix-agent
+          state: restarted
+          enabled: yes

@@ -1,0 +1,25 @@
+---
+- name: Create a new host or update an existing host's info
+  hosts: all
+  tasks:
+    - name: Register Host To Zabbix Server
+      delegate_to: 127.0.0.1
+      community.zabbix.zabbix_host:
+       server_url: http://baykus.udhb.gov.tr/zabbix/
+       login_user: ksaruhan
+       login_password: Ahmed43!
+       host_name: "{{ ansible_hostname }}"
+       host_groups:
+        - "Linux servers"
+       link_templates:
+        - "Template OS Linux"
+       status: enabled
+       state: present
+       interfaces:
+        - type: 1
+          main: 1
+          useip: 1
+          ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4'].address }}"
+          dns: ""
+          port: 10050
+

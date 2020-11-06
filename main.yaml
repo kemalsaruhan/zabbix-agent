@@ -1,0 +1,18 @@
+---
+-
+  hosts: all
+  name: Zabbiz Agent
+  tasks:
+
+- name: INSTALL and CONFIGURE ZABBIX AGENT || UBUNTU
+  import_playbook: install_configure_ubuntu.yaml
+  when:
+      - ansible_os_family == 'Debian'
+
+- name: INSTALL and CONFIGURE ZABBIX AGENT || CENTOS
+  import_playbook: install_configure_centos.yaml
+  when:
+      - ansible_os_family == 'RedHat'
+
+- name: REGISTER HOST TO SERVER
+  import_playbook: register_debian_host.yaml
